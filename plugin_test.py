@@ -41,7 +41,7 @@ def test_annotation_fail(testdir):
     testdir.monkeypatch.setenv('GITHUB_ACTIONS', 'true')
     result = testdir.runpytest_subprocess()
     result.stdout.fnmatch_lines([
-        '::error file=test_annotation_fail.py,line=5::test_fail*assert 0*',
+        '::error file=test_annotation_fail.py,line=5,title="test_fail"::*assert 0*',
     ])
 
 def test_annotation_exception(testdir):
@@ -58,7 +58,7 @@ def test_annotation_exception(testdir):
     testdir.monkeypatch.setenv('GITHUB_ACTIONS', 'true')
     result = testdir.runpytest_subprocess()
     result.stdout.fnmatch_lines([
-        '::error file=test_annotation_exception.py,line=5::test_fail*oops*',
+        '::error file=test_annotation_exception.py,line=5,title=\"test_fail\"::*oops*',
     ])
 
 def test_annotation_fail_disabled_outside_workflow(testdir):
@@ -91,7 +91,7 @@ def test_annotation_fail_cwd(testdir):
     testdir.makefile('.ini', pytest='[pytest]\ntestpaths=..')
     result = testdir.runpytest_subprocess('--rootdir=foo')
     result.stdout.fnmatch_lines([
-        '::error file=test_annotation_fail_cwd.py,line=5::test_fail*assert 0*',
+        '::error file=test_annotation_fail_cwd.py,line=5,title="test_fail"::*assert 0*',
     ])
 
 def test_annotation_long(testdir):
@@ -119,7 +119,7 @@ def test_annotation_long(testdir):
     testdir.monkeypatch.setenv('GITHUB_ACTIONS', 'true')
     result = testdir.runpytest_subprocess()
     result.stdout.fnmatch_lines([
-        '::error file=test_annotation_long.py,line=17::test_annotation_fail*assert 8 == 3*where 8 = f(8)*',
+        '::error file=test_annotation_long.py,line=17,title="test_annotation_fail"::*assert 8 == 3*where 8 = f(8)*',
     ])
     no_fnmatch_line(result, '::*assert x += 1*')
 
@@ -138,7 +138,7 @@ def test_class_method(testdir):
     testdir.monkeypatch.setenv('GITHUB_ACTIONS', 'true')
     result = testdir.runpytest_subprocess()
     result.stdout.fnmatch_lines([
-        '::error file=test_class_method.py,line=7::TestClass.test_method*assert 1 == 2*',
+        '::error file=test_class_method.py,line=7,title="TestClass.test_method"::*assert 1 == 2*',
     ])
     no_fnmatch_line(result, '::*x = 1*')
 
@@ -164,7 +164,7 @@ def test_annotation_long(testdir):
     testdir.monkeypatch.setenv('GITHUB_ACTIONS', 'true')
     result = testdir.runpytest_subprocess()
     result.stdout.fnmatch_lines([
-        '::error file=test_annotation_long.py,line=11::test_param?other?1*assert 2 == 3*',
+        '::error file=test_annotation_long.py,line=11,title="test_param?other?1?"::*assert 2 == 3*',
     ])
 
 # Debugging / development tip:
